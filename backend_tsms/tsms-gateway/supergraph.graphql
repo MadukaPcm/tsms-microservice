@@ -1,0 +1,553 @@
+
+schema
+  @link(url: "https://specs.apollo.dev/link/v1.0")
+  @link(url: "https://specs.apollo.dev/join/v0.2", for: EXECUTION)
+{
+  query: Query
+  mutation: Mutation
+}
+
+directive @join__field(graph: join__Graph!, requires: join__FieldSet, provides: join__FieldSet, type: String, external: Boolean, override: String, usedOverridden: Boolean) repeatable on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
+
+directive @join__graph(name: String!, url: String!) on ENUM_VALUE
+
+directive @join__implements(graph: join__Graph!, interface: String!) repeatable on OBJECT | INTERFACE
+
+directive @join__type(graph: join__Graph!, key: join__FieldSet, extension: Boolean! = false, resolvable: Boolean! = true) repeatable on OBJECT | INTERFACE | UNION | ENUM | INPUT_OBJECT | SCALAR
+
+directive @link(url: String, as: String, for: link__Purpose, import: [link__Import]) repeatable on SCHEMA
+
+type ArchiveAccount
+  @join__type(graph: UAA_SERVICE)
+{
+  success: Boolean
+  errors: ExpectedErrorType
+}
+
+type AudienceCategoryType
+  @join__type(graph: TRAINING_SERVICE)
+{
+  id: UUID!
+  instituteId: String!
+  createdById: String!
+  categoryName: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type CreateInstitute
+  @join__type(graph: UAA_SERVICE)
+{
+  institute: InstituteType
+}
+
+type CreatePaymentMethodMutation
+  @join__type(graph: TRAINING_SERVICE)
+{
+  paymentMethod: PaymentMethodType
+}
+
+type CreatePaymentMutation
+  @join__type(graph: TRAINING_SERVICE)
+{
+  payment: PaymentType
+}
+
+scalar Date
+  @join__type(graph: UAA_SERVICE)
+
+scalar DateTime
+  @join__type(graph: TRAINING_SERVICE)
+  @join__type(graph: UAA_SERVICE)
+
+scalar Decimal
+  @join__type(graph: TRAINING_SERVICE)
+
+type DeleteAccount
+  @join__type(graph: UAA_SERVICE)
+{
+  success: Boolean
+  errors: ExpectedErrorType
+}
+
+type DeleteInstituteMutation
+  @join__type(graph: UAA_SERVICE)
+{
+  deleteInstitute: InstituteType
+}
+
+type DeletePaymentMethodMutation
+  @join__type(graph: TRAINING_SERVICE)
+{
+  deletePaymentMethod: PaymentMethodType
+}
+
+type DeletePaymentMutation
+  @join__type(graph: TRAINING_SERVICE)
+{
+  deletePayment: PaymentType
+}
+
+scalar ExpectedErrorType
+  @join__type(graph: UAA_SERVICE)
+
+scalar GenericScalar
+  @join__type(graph: UAA_SERVICE)
+
+type InstituteType
+  @join__type(graph: UAA_SERVICE, key: "id")
+{
+  id: UUID!
+  regNo: String!
+  instituteName: String!
+  instituteAbbreviation: String!
+  instituteDescription: String!
+  instituteEmail: String!
+  instituteLocation: String!
+  postOfficeAddress: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  userSet: [UserType!]!
+  tsmsuserrolesSet: [TSMSUserRolesType!]!
+}
+
+scalar join__FieldSet
+
+enum join__Graph {
+  TRAINING_SERVICE @join__graph(name: "training_service", url: "http://0.0.0.0:8082/graphql")
+  UAA_SERVICE @join__graph(name: "uaa_service", url: "http://0.0.0.0:8080/graphql")
+}
+
+scalar link__Import
+
+enum link__Purpose {
+  """
+  `SECURITY` features provide metadata necessary to securely resolve fields.
+  """
+  SECURITY
+
+  """
+  `EXECUTION` features provide metadata necessary for operation execution.
+  """
+  EXECUTION
+}
+
+type Mutation
+  @join__type(graph: TRAINING_SERVICE)
+  @join__type(graph: UAA_SERVICE)
+{
+  CreatePaymentMethod(createdById: String, instituteId: String, paymentMethod: String!): CreatePaymentMethodMutation @join__field(graph: TRAINING_SERVICE)
+  deletePaymentMethod(id: ID): DeletePaymentMethodMutation @join__field(graph: TRAINING_SERVICE)
+  CreatePayment(amount: Float!, createdById: String, currency: String!, instituteId: String, paymentMethodId: String, trainingId: String): CreatePaymentMutation @join__field(graph: TRAINING_SERVICE)
+  deletePayment(id: ID): DeletePaymentMutation @join__field(graph: TRAINING_SERVICE)
+  createInstitute(instituteAbbreviation: String!, instituteDescription: String!, instituteEmail: String!, instituteLocation: String!, instituteName: String!, postOfficeAddress: String!, regNo: String!): CreateInstitute @join__field(graph: UAA_SERVICE)
+  updateInstitute(id: ID, instituteAbbreviation: String!, instituteDescription: String!, instituteEmail: String!, instituteLocation: String!, instituteName: String!, postOfficeAddress: String!, regNo: String!): UpdateInstituteMutation @join__field(graph: UAA_SERVICE)
+  deleteInstitute(id: ID): DeleteInstituteMutation @join__field(graph: UAA_SERVICE)
+  createAccount(email: String!, employId: String!, firstName: String!, institutionId: String!, lastName: String!, nidaNo: String!, password1: String!, phoneNumber: String!, username: String!): UserCreateMutation @join__field(graph: UAA_SERVICE)
+  verifyAccount(token: String!): VerifyAccount @join__field(graph: UAA_SERVICE)
+  resendActivationEmail(email: String!): ResendActivationEmail @join__field(graph: UAA_SERVICE)
+  sendPasswordResetEmail(email: String!): SendPasswordResetEmail @join__field(graph: UAA_SERVICE)
+  passwordReset(token: String!, newPassword1: String!, newPassword2: String!): PasswordReset @join__field(graph: UAA_SERVICE)
+  passwordChange(oldPassword: String!, newPassword1: String!, newPassword2: String!): PasswordChange @join__field(graph: UAA_SERVICE)
+  archiveAccount(password: String!): ArchiveAccount @join__field(graph: UAA_SERVICE)
+  deleteAccount(password: String!): DeleteAccount @join__field(graph: UAA_SERVICE)
+  sendSecondaryEmailActivation(email: String!, password: String!): SendSecondaryEmailActivation @join__field(graph: UAA_SERVICE)
+  verifySecondaryEmail(token: String!): VerifySecondaryEmail @join__field(graph: UAA_SERVICE)
+  swapEmails(password: String!): SwapEmails @join__field(graph: UAA_SERVICE)
+  tokenAuth(password: String!, email: String, username: String): ObtainJSONWebToken @join__field(graph: UAA_SERVICE)
+  verifyToken(token: String!): VerifyToken @join__field(graph: UAA_SERVICE)
+  refreshToken(refreshToken: String!): RefreshToken @join__field(graph: UAA_SERVICE)
+  revokeToken(refreshToken: String!): RevokeToken @join__field(graph: UAA_SERVICE)
+}
+
+interface Node
+  @join__type(graph: UAA_SERVICE)
+{
+  id: ID!
+}
+
+type ObtainJSONWebToken
+  @join__type(graph: UAA_SERVICE)
+{
+  token: String
+  success: Boolean
+  errors: ExpectedErrorType
+  user: UserNode
+  unarchiving: Boolean
+  refreshToken: String
+}
+
+type PageInfo
+  @join__type(graph: UAA_SERVICE)
+{
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+type PasswordChange
+  @join__type(graph: UAA_SERVICE)
+{
+  success: Boolean
+  errors: ExpectedErrorType
+  refreshToken: String
+  token: String
+}
+
+type PasswordReset
+  @join__type(graph: UAA_SERVICE)
+{
+  success: Boolean
+  errors: ExpectedErrorType
+}
+
+type PaymentMethodType
+  @join__type(graph: TRAINING_SERVICE, key: "id")
+{
+  id: UUID!
+  instituteId: String!
+  createdById: String!
+  paymentMethod: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  paymentSet: [PaymentType!]!
+}
+
+type PaymentType
+  @join__type(graph: TRAINING_SERVICE)
+{
+  id: UUID!
+  instituteId: String!
+  createdById: String!
+  trainingId: TrainingType
+  paymentMethodId: PaymentMethodType
+  currency: String!
+  amount: Decimal
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Query
+  @join__type(graph: TRAINING_SERVICE)
+  @join__type(graph: UAA_SERVICE)
+{
+  allPaymentMethods: [PaymentMethodType] @join__field(graph: TRAINING_SERVICE)
+  allPayments: [PaymentType] @join__field(graph: TRAINING_SERVICE)
+  allTrainingAttendance: [TrainingAttendanceType] @join__field(graph: TRAINING_SERVICE)
+  allVenues: [VenueType] @join__field(graph: TRAINING_SERVICE)
+  allAudienceCategory: [AudienceCategoryType] @join__field(graph: TRAINING_SERVICE)
+  allTraining: [TrainingType] @join__field(graph: TRAINING_SERVICE)
+  specificTraining(id: String): [TrainingType] @join__field(graph: TRAINING_SERVICE)
+  singleTraining(id: String): [TrainingType] @join__field(graph: TRAINING_SERVICE)
+  allTrainingApplication: [TrainingApplicationType] @join__field(graph: TRAINING_SERVICE)
+  appliedTrainingByInstitute(id: String): [TrainingApplicationType] @join__field(graph: TRAINING_SERVICE)
+  me: UserNode @join__field(graph: UAA_SERVICE)
+  user(id: ID!): UserNode @join__field(graph: UAA_SERVICE)
+  users(offset: Int, before: String, after: String, first: Int, last: Int, email: String, username: String, username_Icontains: String, username_Istartswith: String, isActive: Boolean, status_Archived: Boolean, status_Verified: Boolean, status_SecondaryEmail: String): UserNodeConnection @join__field(graph: UAA_SERVICE)
+  allInstitute: [InstituteType] @join__field(graph: UAA_SERVICE)
+  allUsers: [UserType] @join__field(graph: UAA_SERVICE)
+  allMypermissions: [TSMSUserPermissionsType] @join__field(graph: UAA_SERVICE)
+}
+
+type RefreshToken
+  @join__type(graph: UAA_SERVICE)
+{
+  token: String
+  payload: GenericScalar
+  success: Boolean
+  errors: ExpectedErrorType
+  refreshToken: String
+}
+
+type ResendActivationEmail
+  @join__type(graph: UAA_SERVICE)
+{
+  success: Boolean
+  errors: ExpectedErrorType
+}
+
+type RevokeToken
+  @join__type(graph: UAA_SERVICE)
+{
+  revoked: Int
+  success: Boolean
+  errors: ExpectedErrorType
+}
+
+type SendPasswordResetEmail
+  @join__type(graph: UAA_SERVICE)
+{
+  success: Boolean
+  errors: ExpectedErrorType
+}
+
+type SendSecondaryEmailActivation
+  @join__type(graph: UAA_SERVICE)
+{
+  success: Boolean
+  errors: ExpectedErrorType
+}
+
+type SwapEmails
+  @join__type(graph: UAA_SERVICE)
+{
+  success: Boolean
+  errors: ExpectedErrorType
+}
+
+enum TrainingApplicationRequestType
+  @join__type(graph: TRAINING_SERVICE)
+{
+  A_0
+  A_1
+}
+
+enum TrainingApplicationStatusFeedback
+  @join__type(graph: TRAINING_SERVICE)
+{
+  A_0
+  A_1
+  A_2
+  A_3
+}
+
+type TrainingApplicationType
+  @join__type(graph: TRAINING_SERVICE)
+{
+  id: UUID!
+  instituteId: String!
+  createdById: String!
+  trainingId: TrainingType
+  trainAppller: String
+  requestType: TrainingApplicationRequestType!
+  participantNo: Int!
+  statusFeedback: TrainingApplicationStatusFeedback!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type TrainingAttendanceType
+  @join__type(graph: TRAINING_SERVICE)
+{
+  id: UUID!
+  instituteId: String!
+  createdById: String!
+  trainingId: TrainingType
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+enum TrainingModeOfDelivery
+  @join__type(graph: TRAINING_SERVICE)
+{
+  A_0
+  A_1
+}
+
+enum TrainingStatus
+  @join__type(graph: TRAINING_SERVICE)
+{
+  A_0
+  A_1
+  A_2
+  A_3
+}
+
+type TrainingType
+  @join__type(graph: TRAINING_SERVICE)
+{
+  id: UUID!
+  instituteId: String!
+  createdById: String!
+  venueId: VenueType
+  extraVenueName: String
+  trainer: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  modeOfDelivery: TrainingModeOfDelivery!
+  description: String!
+  theme: String!
+  cost: Float
+  topic: String!
+  startDate: DateTime!
+  endDate: DateTime!
+  participantLimit: Int!
+  status: TrainingStatus!
+  slotsRemaining: Int!
+  trainingapplicationSet: [TrainingApplicationType!]!
+  trainingattendanceSet: [TrainingAttendanceType!]!
+  paymentSet: [PaymentType!]!
+}
+
+type TSMSUserPermissionsGroupType
+  @join__type(graph: UAA_SERVICE)
+{
+  permissionGroupUniqueId: UUID!
+  permissionGroupName: String!
+  permissionGroupDescription: String
+  permissionGroupCreatedby: UserType!
+  permissionGroupCreateddate: Date!
+}
+
+type TSMSUserPermissionsType
+  @join__type(graph: UAA_SERVICE)
+{
+  permissionUniqueId: String!
+  permissionName: String!
+  permissionCode: String!
+}
+
+type TSMSUserRolesType
+  @join__type(graph: UAA_SERVICE)
+{
+  roleUniqueId: UUID!
+  institute: InstituteType!
+  roleName: String!
+  roleDescription: String!
+  roleCreatedby: UserType!
+  roleCreateddate: Date!
+  userRoleWithPermissionRole: [TSMSUserRolesWithPermissionsType!]!
+  userRoleName: [TSMSUsersWithRolesType!]!
+}
+
+type TSMSUserRolesWithPermissionsType
+  @join__type(graph: UAA_SERVICE)
+{
+  roleWithPermissionUniqueId: UUID!
+  roleWithPermissionRole: TSMSUserRolesType!
+  permissionReadOnly: Boolean!
+  roleWithPermissionCreatedby: UserType!
+  roleWithPermissionCreateddate: Date!
+}
+
+type TSMSUsersWithRolesType
+  @join__type(graph: UAA_SERVICE)
+{
+  userWithRoleUniqueId: UUID!
+  userWithRoleRole: TSMSUserRolesType!
+  userWithRoleUser: UserType!
+  userWithRoleCreatedby: UserType!
+  userWithRoleCreateddate: Date!
+}
+
+type UpdateInstituteMutation
+  @join__type(graph: UAA_SERVICE)
+{
+  updateInstitute: InstituteType
+}
+
+type UserCreateMutation
+  @join__type(graph: UAA_SERVICE)
+{
+  user: UserType
+  success: Boolean
+  token: String
+  refreshToken: String
+}
+
+type UserNode implements Node
+  @join__implements(graph: UAA_SERVICE, interface: "Node")
+  @join__type(graph: UAA_SERVICE)
+{
+  id: ID!
+  lastLogin: DateTime
+  username: String!
+  firstName: String!
+  lastName: String!
+  isStaff: Boolean!
+  isActive: Boolean!
+  dateJoined: DateTime!
+  email: String!
+  institutionId: InstituteType
+  employId: String
+  nidaNo: String
+  phoneNumber: String!
+  userRoleCreator: [TSMSUserRolesType!]!
+  permissionGroupCreator: [TSMSUserPermissionsGroupType!]!
+  userRoleWithPermissionCreator: [TSMSUserRolesWithPermissionsType!]!
+  roleUser: [TSMSUsersWithRolesType!]!
+  userWithRoleCreator: [TSMSUsersWithRolesType!]!
+  pk: Int
+  archived: Boolean
+  verified: Boolean
+  secondaryEmail: String
+}
+
+type UserNodeConnection
+  @join__type(graph: UAA_SERVICE)
+{
+  pageInfo: PageInfo!
+  edges: [UserNodeEdge]!
+}
+
+type UserNodeEdge
+  @join__type(graph: UAA_SERVICE)
+{
+  node: UserNode
+  cursor: String!
+}
+
+type UserType
+  @join__type(graph: UAA_SERVICE)
+{
+  id: ID!
+  lastLogin: DateTime
+  username: String!
+  firstName: String!
+  lastName: String!
+  isStaff: Boolean!
+  isActive: Boolean!
+  dateJoined: DateTime!
+  email: String!
+  institutionId: InstituteType
+  employId: String
+  nidaNo: String
+  phoneNumber: String!
+  userRoleCreator: [TSMSUserRolesType!]!
+  permissionGroupCreator: [TSMSUserPermissionsGroupType!]!
+  userRoleWithPermissionCreator: [TSMSUserRolesWithPermissionsType!]!
+  roleUser: [TSMSUsersWithRolesType!]!
+  userWithRoleCreator: [TSMSUsersWithRolesType!]!
+  password: String!
+  isSuperuser: Boolean!
+}
+
+scalar UUID
+  @join__type(graph: TRAINING_SERVICE)
+  @join__type(graph: UAA_SERVICE)
+
+type VenueType
+  @join__type(graph: TRAINING_SERVICE)
+{
+  id: UUID!
+  instituteId: String!
+  createdById: String!
+  locationName: String!
+  capacity: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  trainingSet: [TrainingType!]!
+}
+
+type VerifyAccount
+  @join__type(graph: UAA_SERVICE)
+{
+  success: Boolean
+  errors: ExpectedErrorType
+}
+
+type VerifySecondaryEmail
+  @join__type(graph: UAA_SERVICE)
+{
+  success: Boolean
+  errors: ExpectedErrorType
+}
+
+type VerifyToken
+  @join__type(graph: UAA_SERVICE)
+{
+  payload: GenericScalar
+  success: Boolean
+  errors: ExpectedErrorType
+}

@@ -1,0 +1,19 @@
+{
+  "name": "fnl-gateway",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@apollo/rover": "^0.8.2"
+  },
+  "dependencies": {
+    "@apollo/gateway": "^2.1.1",
+    "apollo-server": "^3.10.2",
+    "graphql": "^16.6.0"
+  }
+}
