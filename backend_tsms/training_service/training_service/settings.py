@@ -110,7 +110,6 @@ DATABASES = {
         'USER':'postgres',
         'PASSWORD': 'egovridc',
         'HOST':'localhost',
-
     }
 }
 

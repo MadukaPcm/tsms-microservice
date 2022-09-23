@@ -9,6 +9,8 @@ from graphql_jwt.shortcuts import get_token, create_refresh_token
 
 from uaa.models import Institute,User,TSMSUserRoles,TSMSUserPermissionsGroup,TSMSUserPermissions,TSMSUserRolesWithPermissions,TSMSUsersWithRoles
 
+from . producer import publish
+
 
 @key(fields='id')
 class InstituteType(DjangoObjectType):
@@ -66,6 +68,7 @@ class CreateInstitute(graphene.Mutation):
         post_office_address=post_office_address)
 
         institute_data.save()
+        # publish()
         return CreateInstitute(institute=institute_data)
 
 class UpdateInstituteMutation(graphene.Mutation):
@@ -203,6 +206,8 @@ class DataQuery(graphene.ObjectType):
     all_mypermissions = graphene.List(TSMSUserPermissionsType)
 
     def resolve_all_institute(root,info):
+        # publish('institute_list',Institute.objects.all())
+        publish()
         return  Institute.objects.all()
 
     def resolve_all_users(root,info):
