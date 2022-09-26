@@ -13,6 +13,21 @@ from . producer import publish
 
 
 @key(fields='id')
+class TSMSUserObject(graphene.ObjectType):
+    id=graphene.String(required=True)
+    first_name=graphene.String(required=True)
+    last_name=graphene.String(required=True)
+
+    def __resolve_reference(self, info, **kwargs):
+        user_data=User.objects.filter(id=self.id).first()
+        return TSMSUserObject(
+            user_data.id,
+            user_data.first_name,
+            user_data.last_name,
+        )
+
+
+@key(fields='id')
 class InstituteType(DjangoObjectType):
     class Meta:
         model = Institute
@@ -203,6 +218,8 @@ class DataMutation(graphene.ObjectType):
 class DataQuery(graphene.ObjectType):
     all_institute = graphene.List(InstituteType)
     all_users = graphene.List(UserType)
+    get_users_list = graphene.List(TSMSUserObject)
+
     all_mypermissions = graphene.List(TSMSUserPermissionsType)
 
     def resolve_all_institute(root,info):

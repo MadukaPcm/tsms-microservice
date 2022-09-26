@@ -242,11 +242,13 @@ type Query
   singleTraining(id: String): [TrainingType] @join__field(graph: TRAINING_SERVICE)
   allTrainingApplication: [TrainingApplicationType] @join__field(graph: TRAINING_SERVICE)
   appliedTrainingByInstitute(id: String): [TrainingApplicationType] @join__field(graph: TRAINING_SERVICE)
+  getAllTrainingList: [TSMSTrainingObject] @join__field(graph: TRAINING_SERVICE)
   me: UserNode @join__field(graph: UAA_SERVICE)
   user(id: ID!): UserNode @join__field(graph: UAA_SERVICE)
   users(offset: Int, before: String, after: String, first: Int, last: Int, email: String, username: String, username_Icontains: String, username_Istartswith: String, isActive: Boolean, status_Archived: Boolean, status_Verified: Boolean, status_SecondaryEmail: String): UserNodeConnection @join__field(graph: UAA_SERVICE)
   allInstitute: [InstituteType] @join__field(graph: UAA_SERVICE)
   allUsers: [UserType] @join__field(graph: UAA_SERVICE)
+  getUsersList: [TSMSUserObject] @join__field(graph: UAA_SERVICE)
   allMypermissions: [TSMSUserPermissionsType] @join__field(graph: UAA_SERVICE)
 }
 
@@ -378,6 +380,24 @@ type TrainingType
   trainingapplicationSet: [TrainingApplicationType!]!
   trainingattendanceSet: [TrainingAttendanceType!]!
   paymentSet: [PaymentType!]!
+}
+
+type TSMSTrainingObject
+  @join__type(graph: TRAINING_SERVICE)
+{
+  id: String!
+  trainingUniqueId: String!
+  trainingTitle: String!
+  trainer: TSMSUserObject
+}
+
+type TSMSUserObject
+  @join__type(graph: TRAINING_SERVICE, key: "id")
+  @join__type(graph: UAA_SERVICE, key: "id")
+{
+  id: String!
+  firstName: String! @join__field(graph: UAA_SERVICE)
+  lastName: String! @join__field(graph: UAA_SERVICE)
 }
 
 type TSMSUserPermissionsGroupType
