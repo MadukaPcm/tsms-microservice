@@ -2,11 +2,8 @@
   <div>
     <v-navigation-drawer v-model="drawer" flat app color="white">
       <v-list nav dense>
-        <v-list-item-group
-          v-model="group"
-          active-class="deep-purple--text text--accent-4"
-        >
-          <router-link style="text-decoration: none; color: inherit;" to="/">
+        <v-list-item-group active-class="deep-purple--text text--accent-4">
+          <router-link style="text-decoration: none; color: inherit" to="/">
             <v-list-item>
               <v-list-item-icon>
                 <v-icon>mdi-microsoft-windows</v-icon>
@@ -15,7 +12,10 @@
             </v-list-item>
           </router-link>
 
-          <router-link style="text-decoration: none; color: inherit;" to="/project">
+          <router-link
+            style="text-decoration: none; color: inherit"
+            to="/project"
+          >
             <v-list-item>
               <v-list-item-icon>
                 <v-icon>mdi-folder</v-icon>
@@ -24,7 +24,10 @@
             </v-list-item>
           </router-link>
 
-          <router-link style="text-decoration: none; color: inherit;" to="/account">
+          <router-link
+            style="text-decoration: none; color: inherit"
+            to="/account"
+          >
             <v-list-item>
               <v-list-item-icon>
                 <v-icon>mdi-account</v-icon>
@@ -33,7 +36,10 @@
             </v-list-item>
           </router-link>
 
-          <router-link style="text-decoration: none; color: inherit;" to="/setting">
+          <router-link
+            style="text-decoration: none; color: inherit"
+            to="/setting"
+          >
             <v-list-item>
               <v-list-item-icon>
                 <v-icon>mdi-cog-outline mdi-spin</v-icon>
@@ -59,14 +65,14 @@
     <v-app-bar app>
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
-      <v-toobar-title class="text-uppercase grey--text">
+      <v-toolbar-title class="text-uppercase grey--text">
         <span class="font-weight-light">Todo</span>
         <span> Frank</span>
-      </v-toobar-title>
+      </v-toolbar-title>
 
       <v-spacer></v-spacer>
 
-      <v-btn flat color="grey">
+      <v-btn text color="grey">
         <span>Sign Out</span>
         <v-icon right>mdi-logout</v-icon>
       </v-btn>
@@ -74,7 +80,7 @@
   </div>
 </template>
 
-  <script>
+<script>
 export default {
   data: () => ({
     drawer: null,
